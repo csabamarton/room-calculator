@@ -43,7 +43,7 @@ mvn spring-boot:run
 - Endpoint: POST /calculate-wallpaper
 - Request Body: Upload the input file
 - The calculated results will be returned as a JSON response, including the total square feet of wallpaper needed, rooms with a cubic shape, and rooms appearing more than once:
-```
+```json
 {
   "totalWallpaper": 1592486,
   "cubicRooms": [
