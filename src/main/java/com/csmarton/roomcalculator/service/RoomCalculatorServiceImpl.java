@@ -2,6 +2,7 @@ package com.csmarton.roomcalculator.service;
 
 import com.csmarton.roomcalculator.model.Room;
 import com.csmarton.roomcalculator.model.RoomProcessOutput;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class RoomCalculatorServiceImpl implements RoomCalculatorService {
 
     private final FileIOService fileIOService;
@@ -21,9 +23,11 @@ public class RoomCalculatorServiceImpl implements RoomCalculatorService {
 
     @Override
     public RoomProcessOutput calculateWallpaper(String filePath) {
+        log.info("Calculating wallpaper from file: {}", filePath);
+
         List<Room> rooms = fileIOService.readRoomsFromFile(filePath);
         if (rooms.isEmpty()) {
-            System.out.println("Failed to read input file.");
+            log.error("Failed to read input file.");
             return new RoomProcessOutput(0, new ArrayList<>(), new HashSet<>());
         }
 
@@ -32,9 +36,11 @@ public class RoomCalculatorServiceImpl implements RoomCalculatorService {
 
     @Override
     public RoomProcessOutput calculateWallpaper(MultipartFile file) {
+        log.info("Calculating wallpaper from uploaded file: {}", file.getOriginalFilename());
+
         List<Room> rooms = fileIOService.readRoomsFromFile(file);
         if (rooms.isEmpty()) {
-            System.out.println("Failed to read input file.");
+            log.error("Failed to read input file.");
             return new RoomProcessOutput(0, new ArrayList<>(), new HashSet<>());
         }
 
@@ -49,6 +55,7 @@ public class RoomCalculatorServiceImpl implements RoomCalculatorService {
 
         RoomProcessOutput result = new RoomProcessOutput(totalWallpaper, cubicRooms, duplicateRooms);
 
+        log.info("Printing results:");
         result.printResults();
 
         return result;
