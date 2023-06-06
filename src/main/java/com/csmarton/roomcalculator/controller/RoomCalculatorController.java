@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class RoomCalculatorController {
     private final RoomCalculatorService roomCalculatorService;
 
-
     @PostMapping(value = "/calculate-wallpaper", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RoomProcessOutput> calculateWallpaper(@RequestBody MultipartFile file) {
         try {

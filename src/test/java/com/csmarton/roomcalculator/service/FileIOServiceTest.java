@@ -26,10 +26,10 @@ class FileIOServiceTest {
     @Test
     @DisplayName("Test processLine() with valid input")
     void testProcessLine_ValidLine_ReturnsRoom() {
-        // Arrange
+        // Given
         String line = "3x11x24";
 
-        // Act
+        // When
         Room room = fileIOService.processLine(line);
 
         // Assert
@@ -41,10 +41,10 @@ class FileIOServiceTest {
     @Test
     @DisplayName("Test processLine() with invalid input")
     void testProcessLine_InvalidFormat_ThrowsException() {
-        // Arrange
+        // Given
         String line = "2sx3x4";
 
-        // Act and Assert
+        // When and Assert
         assertThrows(InvalidFileFormatException.class, () -> {
             fileIOService.processLine(line);
         });
@@ -53,10 +53,10 @@ class FileIOServiceTest {
     @Test
     @DisplayName("Test processLine() with invalid empty input")
     void testProcessLine_EmptyLine_ThrowsException() {
-        // Arrange
+        // Given
         String line = "";
 
-        // Act and Assert
+        // When and Assert
         assertThrows(InvalidFileFormatException.class, () -> {
             fileIOService.processLine(line);
         });
