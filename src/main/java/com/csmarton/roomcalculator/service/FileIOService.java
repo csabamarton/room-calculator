@@ -4,12 +4,9 @@ import com.csmarton.roomcalculator.exception.FileProcessingException;
 import com.csmarton.roomcalculator.exception.InvalidFileFormatException;
 import com.csmarton.roomcalculator.model.Room;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -22,21 +19,6 @@ public class FileIOService {
     public List<Room> readRoomsFromFile(String filePath) {
         List<Room> rooms = new ArrayList<>();
         try (BufferedReader reader = Files.newBufferedReader(Path.of(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Room room = processLine(line);
-                rooms.add(room);
-            }
-        } catch (IOException e) {
-            throw new FileProcessingException("Error reading the input file: " + e.getMessage());
-        }
-        return rooms;
-    }
-
-    public List<Room> readRoomsFromFile(MultipartFile file) {
-        List<Room> rooms = new ArrayList<>();
-        try (InputStream inputStream = file.getInputStream();
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 Room room = processLine(line);

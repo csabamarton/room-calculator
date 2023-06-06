@@ -1,16 +1,16 @@
 package com.csmarton.roomcalculator.service;
 
 import com.csmarton.roomcalculator.model.Room;
+import com.csmarton.roomcalculator.model.RoomProcessOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @DisplayName("RoomCalculatorService Test")
 class RoomCalculatorServiceServiceImplTest {
@@ -19,8 +19,69 @@ class RoomCalculatorServiceServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        fileIOService = new FileIOService();
+        fileIOService = Mockito.mock(FileIOService.class);
         roomCalculatorService = new RoomCalculatorServiceImpl(fileIOService);
+    }
+
+    @Test
+    void testCalculateWallpaper_WithValidFilePath() {
+        // Given
+        String filePath = "path/to/file.txt";
+        List<Room> rooms = Arrays.asList(
+                new Room(3, 4, 5),
+                new Room(6, 7, 8),
+                new Room(9, 10, 11)
+        );
+        RoomProcessOutput expectedOutput = new RoomProcessOutput(1128, new ArrayList<>(), new HashSet<>());
+        doReturn(rooms).when(fileIOService).readRoomsFromFile(filePath);
+
+        // When
+        RoomProcessOutput actualOutput = roomCalculatorService.calculateWallpaper(filePath);
+
+        // Then
+        assertEquals(expectedOutput, actualOutput);
+        verify(fileIOService, times(1)).readRoomsFromFile(filePath);
+    }
+
+    @Test
+    void testCalculateWallpaper_WithInvalidFilePath() {
+        // Given
+        String filePath = "path/to/invalid-file.txt";
+        doReturn(new ArrayList<>()).when(fileIOService).readRoomsFromFile(filePath);
+
+        // When
+        RoomProcessOutput actualOutput = roomCalculatorService.calculateWallpaper(filePath);
+
+        // Then
+        assertEquals(new RoomProcessOutput(0, new ArrayList<>(), new HashSet<>()), actualOutput);
+        verify(fileIOService, times(1)).readRoomsFromFile(filePath);
+    }
+
+    @Test
+    void testCalculateRooms() {
+        // Given
+        List<Room> rooms = Arrays.asList(
+                new Room(2, 4, 2),
+                new Room(2, 2, 2),
+                new Room(3, 2, 2),
+                new Room(3, 3, 3),
+                new Room(4, 4, 4)
+        );
+        List<Room> cubicRooms = Arrays.asList(
+                new Room(4, 4, 4),
+                new Room(3, 3, 3),
+                new Room(2, 2, 2)
+        );
+        String filePath = "path/to/file.txt";
+
+        RoomProcessOutput expectedOutput = new RoomProcessOutput(283, cubicRooms, new HashSet<>());
+        doReturn(rooms).when(fileIOService).readRoomsFromFile(filePath);
+
+        // When
+        RoomProcessOutput actualOutput = roomCalculatorService.calculateRooms(rooms);
+
+        // Then
+        assertEquals(expectedOutput, actualOutput);
     }
 
     @Test

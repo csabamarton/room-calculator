@@ -5,20 +5,15 @@ import com.csmarton.roomcalculator.exception.InvalidFileFormatException;
 import com.csmarton.roomcalculator.model.Room;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.mock.web.MockMultipartFile;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 class FileIOServiceTest {
     private final FileIOService fileIOService = new FileIOService();
@@ -106,48 +101,6 @@ class FileIOServiceTest {
 
         assertThrows(FileProcessingException.class, () -> {
             fileIOService.readRoomsFromFile(filePath);
-        });
-    }
-
-    @Test
-    @DisplayName("Test readRoomsFromFile(MultipartFile file) with valid file")
-    void testReadRoomsFromFileWithValidMultipartFile() {
-        // Given
-        String content = "3x11x24\n13x5x19\n1x9x27";
-        MockMultipartFile multipartFile = new MockMultipartFile("file", "sample-input.txt",
-                "text/plain", content.getBytes(StandardCharsets.UTF_8));
-
-        // When
-        List<Room> rooms = fileIOService.readRoomsFromFile(multipartFile);
-
-        // Assert
-        assertEquals(3, rooms.size());
-    }
-
-    @Test
-    @DisplayName("Test readRoomsFromFile(MultipartFile file) with invalid file format")
-    void testReadRoomsFromFileWithInvalidMultipartFileFormat() {
-        // Given
-        String content = "3x11x24\n2sx3x4\n1x9x27";
-        MockMultipartFile multipartFile = new MockMultipartFile("file", "sample-input.txt",
-                "text/plain", content.getBytes(StandardCharsets.UTF_8));
-
-        // When and Assert
-        assertThrows(InvalidFileFormatException.class, () -> {
-            fileIOService.readRoomsFromFile(multipartFile);
-        });
-    }
-
-    @Test
-    @DisplayName("Test readRoomsFromFile(MultipartFile file) with file processing error")
-    void testReadRoomsFromFileWithFileProcessingError() throws IOException {
-        // Given
-        MockMultipartFile multipartFile = Mockito.mock(MockMultipartFile.class);
-        when(multipartFile.getInputStream()).thenThrow(IOException.class);
-
-        // When and Assert
-        assertThrows(FileProcessingException.class, () -> {
-            fileIOService.readRoomsFromFile(multipartFile);
         });
     }
 }
